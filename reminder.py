@@ -25,16 +25,21 @@ def occurrence_index(start_date: date, interval_days: int, today: date) -> int:
     return elapsed // interval_days
 
 
+# 회차에 따라 붙는 급여 안내 문구.
+#   짝수 회차(0·2·4 = 1·3·5번째): 정상·특별 모두 "칼슘+비타민 섞기"
+#   홀수 회차(1·3·5 = 2·4·6번째): 정상 "슈퍼푸드만", 특별 "MBD off 주기"
 _SUPPLEMENTS = {
-    "normal": "칼슘+비타민 섞기",
-    "special": "MBD off 주기",
+    "normal": ("칼슘+비타민 섞기", "슈퍼푸드만"),
+    "special": ("칼슘+비타민 섞기", "MBD off 주기"),
 }
 
 
 def supplement_note(category: str, idx: int) -> str | None:
-    if idx % 2 != 0:
+    pair = _SUPPLEMENTS.get(category)
+    if pair is None:
         return None
-    return _SUPPLEMENTS.get(category)
+    even_note, odd_note = pair
+    return even_note if idx % 2 == 0 else odd_note
 
 
 def geckos_due_today(config: dict, today: date) -> list:
