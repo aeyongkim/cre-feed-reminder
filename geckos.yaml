@@ -8,9 +8,9 @@ geckos:
   - name: 예시개체-정상
     category: normal
     interval_days: 3
-    start_date: 2026-06-14
+    start_date: 2026-06-13
 
   - name: 예시개체-특별관리
     category: special
     interval_days: 3
-    start_date: 2026-06-14
+    start_date: 2026-06-13
