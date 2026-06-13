@@ -54,3 +54,37 @@ def test_load_config_parses_yaml(tmp_path):
     assert config["geckos"][0]["name"] == "아메"
     assert config["geckos"][0]["start_date"] == date(2026, 6, 14)
     assert config["geckos"][0]["interval_days"] == 3
+
+
+def _config():
+    return {
+        "geckos": [
+            {"name": "아메", "category": "normal",
+             "interval_days": 3, "start_date": date(2026, 6, 14)},
+            {"name": "꿈이", "category": "normal",
+             "interval_days": 3, "start_date": date(2026, 6, 14)},
+            {"name": "별이", "category": "special",
+             "interval_days": 3, "start_date": date(2026, 6, 14)},
+        ]
+    }
+
+
+def test_geckos_due_today_includes_only_due_with_notes():
+    # 첫 급여일(0회차): 셋 다 대상, 보충 문구 모두 표시
+    due = reminder.geckos_due_today(_config(), date(2026, 6, 14))
+    assert due == [
+        {"name": "아메", "category": "normal", "note": "칼슘+비타민 섞기"},
+        {"name": "꿈이", "category": "normal", "note": "칼슘+비타민 섞기"},
+        {"name": "별이", "category": "special", "note": "MBD off 주기"},
+    ]
+
+
+def test_geckos_due_today_second_feeding_has_no_note():
+    # 2번째 급여일(1회차): 대상이지만 보충 문구 없음
+    due = reminder.geckos_due_today(_config(), date(2026, 6, 17))
+    assert due[0] == {"name": "아메", "category": "normal", "note": None}
+
+
+def test_geckos_due_today_empty_when_none_due():
+    due = reminder.geckos_due_today(_config(), date(2026, 6, 15))
+    assert due == []

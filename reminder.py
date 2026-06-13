@@ -32,3 +32,19 @@ def supplement_note(category: str, idx: int) -> str | None:
     if idx % 2 != 0:
         return None
     return _SUPPLEMENTS.get(category)
+
+
+def geckos_due_today(config: dict, today: date) -> list:
+    result = []
+    for g in config.get("geckos", []):
+        start = g["start_date"]
+        interval = g["interval_days"]
+        if not is_due(start, interval, today):
+            continue
+        idx = occurrence_index(start, interval, today)
+        result.append({
+            "name": g["name"],
+            "category": g["category"],
+            "note": supplement_note(g["category"], idx),
+        })
+    return result
