@@ -90,7 +90,10 @@ def send_telegram(token: str, chat_id: str, text: str) -> None:
     resp = requests.post(
         url, json={"chat_id": chat_id, "text": text}, timeout=10
     )
-    resp.raise_for_status()
+    if not resp.ok:
+        raise RuntimeError(
+            f"텔레그램 발송 실패 (HTTP {resp.status_code}): {resp.text}"
+        )
 
 
 def main() -> None:
