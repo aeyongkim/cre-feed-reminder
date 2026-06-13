@@ -83,9 +83,9 @@ def format_message(due: list) -> str | None:
 
     blocks = []
     if normal:
-        blocks.append("\n".join(_section("■ 정상 개체", normal)))
+        blocks.append("\n".join(_section("✅ 정상 개체", normal)))
     if special:
-        blocks.append("\n".join(_section("■ 특별 관리 개체", special)))
+        blocks.append("\n".join(_section("⚠️ 특별 관리 개체", special)))
 
     return "🦎 오늘 급여할 개체\n\n" + "\n\n".join(blocks)
 

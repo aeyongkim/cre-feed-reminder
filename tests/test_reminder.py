@@ -101,11 +101,11 @@ def test_format_message_both_sections():
     assert msg == (
         "🦎 오늘 급여할 개체\n"
         "\n"
-        "■ 정상 개체\n"
+        "✅ 정상 개체\n"
         "- 아메 · 칼슘+비타민 섞기\n"
         "- 꿈이\n"
         "\n"
-        "■ 특별 관리 개체\n"
+        "⚠️ 특별 관리 개체\n"
         "- 별이 · MBD off 주기"
     )
 
@@ -116,7 +116,7 @@ def test_format_message_only_normal_section():
     assert msg == (
         "🦎 오늘 급여할 개체\n"
         "\n"
-        "■ 정상 개체\n"
+        "✅ 정상 개체\n"
         "- 아메"
     )
 
