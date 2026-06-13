@@ -88,3 +88,37 @@ def test_geckos_due_today_second_feeding_has_no_note():
 def test_geckos_due_today_empty_when_none_due():
     due = reminder.geckos_due_today(_config(), date(2026, 6, 15))
     assert due == []
+
+
+def test_format_message_both_sections():
+    due = [
+        {"name": "아메", "category": "normal", "note": "칼슘+비타민 섞기"},
+        {"name": "꿈이", "category": "normal", "note": None},
+        {"name": "별이", "category": "special", "note": "MBD off 주기"},
+    ]
+    msg = reminder.format_message(due)
+    assert msg == (
+        "🦎 오늘 급여할 개체\n"
+        "\n"
+        "■ 정상 개체\n"
+        "- 아메 · 칼슘+비타민 섞기\n"
+        "- 꿈이\n"
+        "\n"
+        "■ 특별 관리 개체\n"
+        "- 별이 · MBD off 주기"
+    )
+
+
+def test_format_message_only_normal_section():
+    due = [{"name": "아메", "category": "normal", "note": None}]
+    msg = reminder.format_message(due)
+    assert msg == (
+        "🦎 오늘 급여할 개체\n"
+        "\n"
+        "■ 정상 개체\n"
+        "- 아메"
+    )
+
+
+def test_format_message_returns_none_when_empty():
+    assert reminder.format_message([]) is None

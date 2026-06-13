@@ -48,3 +48,28 @@ def geckos_due_today(config: dict, today: date) -> list:
             "note": supplement_note(g["category"], idx),
         })
     return result
+
+
+def _section(title: str, geckos: list) -> list:
+    lines = [title]
+    for g in geckos:
+        line = f"- {g['name']}"
+        if g["note"]:
+            line += f" · {g['note']}"
+        lines.append(line)
+    return lines
+
+
+def format_message(due: list) -> str | None:
+    if not due:
+        return None
+    normal = [g for g in due if g["category"] == "normal"]
+    special = [g for g in due if g["category"] == "special"]
+
+    blocks = []
+    if normal:
+        blocks.append("\n".join(_section("■ 정상 개체", normal)))
+    if special:
+        blocks.append("\n".join(_section("■ 특별 관리 개체", special)))
+
+    return "🦎 오늘 급여할 개체\n\n" + "\n\n".join(blocks)
