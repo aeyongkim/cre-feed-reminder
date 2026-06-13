@@ -4,7 +4,12 @@ on:
   schedule:
     # 매일 저녁 8시 KST = 11:00 UTC
     - cron: "0 11 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      force_send:
+        description: "테스트 발송 (오늘이 급여일이 아니어도 전체 개체 알림을 보냄)"
+        type: boolean
+        default: false
 
 jobs:
   remind:
@@ -23,4 +28,5 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          FORCE_SEND: ${{ inputs.force_send }}
         run: python reminder.py

@@ -159,6 +159,40 @@ def test_main_sends_when_due(tmp_path, monkeypatch):
     assert "아메" in sent.call_args.args[2]
 
 
+def test_all_geckos_preview_marks_all_with_first_feeding_note():
+    preview = reminder.all_geckos_preview(_config())
+    assert preview == [
+        {"name": "아메", "category": "normal", "note": "칼슘+비타민 섞기"},
+        {"name": "꿈이", "category": "normal", "note": "칼슘+비타민 섞기"},
+        {"name": "별이", "category": "special", "note": "MBD off 주기"},
+    ]
+
+
+def test_main_force_send_sends_even_when_not_due(tmp_path, monkeypatch):
+    cfg = tmp_path / "geckos.yaml"
+    cfg.write_text(
+        "geckos:\n"
+        "  - name: 아메\n"
+        "    category: normal\n"
+        "    interval_days: 3\n"
+        "    start_date: 2026-06-14\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "T")
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "C")
+    monkeypatch.setenv("FORCE_SEND", "true")
+    monkeypatch.setattr(reminder, "CONFIG_PATH", str(cfg))
+    monkeypatch.setattr(reminder, "current_date", lambda: date(2026, 6, 15))  # 급여일 아님
+    sent = mock.Mock()
+    monkeypatch.setattr(reminder, "send_telegram", sent)
+
+    reminder.main()
+
+    sent.assert_called_once()
+    assert "아메" in sent.call_args.args[2]
+    assert "테스트" in sent.call_args.args[2]
+
+
 def test_main_skips_when_none_due(tmp_path, monkeypatch):
     cfg = tmp_path / "geckos.yaml"
     cfg.write_text(

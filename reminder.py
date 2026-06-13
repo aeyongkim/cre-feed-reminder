@@ -53,6 +53,18 @@ def geckos_due_today(config: dict, today: date) -> list:
     return result
 
 
+def all_geckos_preview(config: dict) -> list:
+    """급여일 여부와 무관하게 전체 개체를 첫 급여일(0회차)처럼 표시 — 테스트용."""
+    result = []
+    for g in config.get("geckos", []):
+        result.append({
+            "name": g["name"],
+            "category": g["category"],
+            "note": supplement_note(g["category"], 0),
+        })
+    return result
+
+
 def _section(title: str, geckos: list) -> list:
     lines = [title]
     for g in geckos:
@@ -100,12 +112,20 @@ def main() -> None:
     token = os.environ["TELEGRAM_BOT_TOKEN"]
     chat_id = os.environ["TELEGRAM_CHAT_ID"]
     config = load_config(CONFIG_PATH)
-    due = geckos_due_today(config, current_date())
+
+    force = os.environ.get("FORCE_SEND", "").strip().lower() in ("1", "true", "yes")
+    if force:
+        due = all_geckos_preview(config)
+        prefix = "🧪 테스트 발송\n\n"
+    else:
+        due = geckos_due_today(config, current_date())
+        prefix = ""
+
     message = format_message(due)
     if message is None:
         print("오늘 급여 대상 없음 — 메시지 미발송")
         return
-    send_telegram(token, chat_id, message)
+    send_telegram(token, chat_id, prefix + message)
     print("급여 알림 발송 완료")
 
 
