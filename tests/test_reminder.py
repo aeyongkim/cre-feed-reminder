@@ -1,4 +1,5 @@
 from datetime import date
+from unittest import mock
 import textwrap
 import reminder
 
@@ -122,3 +123,59 @@ def test_format_message_only_normal_section():
 
 def test_format_message_returns_none_when_empty():
     assert reminder.format_message([]) is None
+
+
+def test_send_telegram_posts_to_bot_api():
+    with mock.patch("reminder.requests.post") as post:
+        post.return_value.raise_for_status.return_value = None
+        reminder.send_telegram("TOKEN", "123", "안녕")
+    post.assert_called_once_with(
+        "https://api.telegram.org/botTOKEN/sendMessage",
+        json={"chat_id": "123", "text": "안녕"},
+        timeout=10,
+    )
+
+
+def test_main_sends_when_due(tmp_path, monkeypatch):
+    cfg = tmp_path / "geckos.yaml"
+    cfg.write_text(
+        "geckos:\n"
+        "  - name: 아메\n"
+        "    category: normal\n"
+        "    interval_days: 3\n"
+        "    start_date: 2026-06-14\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "T")
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "C")
+    monkeypatch.setattr(reminder, "CONFIG_PATH", str(cfg))
+    monkeypatch.setattr(reminder, "current_date", lambda: date(2026, 6, 14))
+    sent = mock.Mock()
+    monkeypatch.setattr(reminder, "send_telegram", sent)
+
+    reminder.main()
+
+    sent.assert_called_once()
+    assert "아메" in sent.call_args.args[2]
+
+
+def test_main_skips_when_none_due(tmp_path, monkeypatch):
+    cfg = tmp_path / "geckos.yaml"
+    cfg.write_text(
+        "geckos:\n"
+        "  - name: 아메\n"
+        "    category: normal\n"
+        "    interval_days: 3\n"
+        "    start_date: 2026-06-14\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "T")
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "C")
+    monkeypatch.setattr(reminder, "CONFIG_PATH", str(cfg))
+    monkeypatch.setattr(reminder, "current_date", lambda: date(2026, 6, 15))
+    sent = mock.Mock()
+    monkeypatch.setattr(reminder, "send_telegram", sent)
+
+    reminder.main()
+
+    sent.assert_not_called()

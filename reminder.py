@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
-from datetime import date
+import os
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 
+import requests
 import yaml
 
 
@@ -73,3 +76,35 @@ def format_message(due: list) -> str | None:
         blocks.append("\n".join(_section("■ 특별 관리 개체", special)))
 
     return "🦎 오늘 급여할 개체\n\n" + "\n\n".join(blocks)
+
+
+CONFIG_PATH = "geckos.yaml"
+
+
+def current_date() -> date:
+    return datetime.now(ZoneInfo("Asia/Seoul")).date()
+
+
+def send_telegram(token: str, chat_id: str, text: str) -> None:
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    resp = requests.post(
+        url, json={"chat_id": chat_id, "text": text}, timeout=10
+    )
+    resp.raise_for_status()
+
+
+def main() -> None:
+    token = os.environ["TELEGRAM_BOT_TOKEN"]
+    chat_id = os.environ["TELEGRAM_CHAT_ID"]
+    config = load_config(CONFIG_PATH)
+    due = geckos_due_today(config, current_date())
+    message = format_message(due)
+    if message is None:
+        print("오늘 급여 대상 없음 — 메시지 미발송")
+        return
+    send_telegram(token, chat_id, message)
+    print("급여 알림 발송 완료")
+
+
+if __name__ == "__main__":
+    main()
