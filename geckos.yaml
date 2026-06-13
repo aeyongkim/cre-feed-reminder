@@ -5,12 +5,37 @@
 #   interval_days: 급여 간격(일). 보통 3
 #   start_date:    급여 시작 기준일 (YYYY-MM-DD)
 geckos:
-  - name: 예시개체-정상
+  - name: 춘식이
     category: normal
     interval_days: 3
-    start_date: 2026-06-13
+    start_date: 2026-06-14
 
-  - name: 예시개체-특별관리
+  - name: 춘봉이
+    category: normal
+    interval_days: 3
+    start_date: 2026-06-14
+
+  - name: 람쥐
+    category: normal
+    interval_days: 3
+    start_date: 2026-06-14
+
+  - name: 생강이
+    category: normal
+    interval_days: 3
+    start_date: 2026-06-14
+
+  - name: 쵸파
+    category: normal
+    interval_days: 3
+    start_date: 2026-06-14
+
+  - name: 커땅이
+    category: normal
+    interval_days: 3
+    start_date: 2026-06-14
+
+  - name: 오땅이
     category: special
     interval_days: 3
-    start_date: 2026-06-13
+    start_date: 2026-06-14
