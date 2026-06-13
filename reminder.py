@@ -4,6 +4,13 @@ from __future__ import annotations
 
 from datetime import date
 
+import yaml
+
+
+def load_config(path: str) -> dict:
+    with open(path, encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
 
 def is_due(start_date: date, interval_days: int, today: date) -> bool:
     elapsed = (today - start_date).days

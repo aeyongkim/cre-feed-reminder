@@ -1,4 +1,5 @@
 from datetime import date
+import textwrap
 import reminder
 
 
@@ -36,3 +37,20 @@ def test_supplement_note_special_on_even_occurrence():
 def test_supplement_note_none_on_odd_occurrence():
     assert reminder.supplement_note("normal", 1) is None
     assert reminder.supplement_note("special", 1) is None
+
+
+def test_load_config_parses_yaml(tmp_path):
+    cfg_file = tmp_path / "geckos.yaml"
+    cfg_file.write_text(textwrap.dedent("""\
+        geckos:
+          - name: 아메
+            category: normal
+            interval_days: 3
+            start_date: 2026-06-14
+        """), encoding="utf-8")
+
+    config = reminder.load_config(str(cfg_file))
+
+    assert config["geckos"][0]["name"] == "아메"
+    assert config["geckos"][0]["start_date"] == date(2026, 6, 14)
+    assert config["geckos"][0]["interval_days"] == 3
