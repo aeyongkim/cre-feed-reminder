@@ -49,7 +49,6 @@ GitHub Actions workflow
 ```yaml
 geckos:
   - name: 아메
-    morph: 릴리화이트       # 선택 항목
     category: normal        # normal | special
     interval_days: 3        # 3일마다 (기본값)
     start_date: 2026-06-14  # 이 날을 기준으로 간격 계산 (= 내일)
@@ -62,7 +61,6 @@ geckos:
 | 필드 | 필수 | 설명 |
 |------|------|------|
 | `name` | O | 개체 이름 |
-| `morph` | X | 모프(색상/유전자 표현형). 메시지에 괄호로 표시 |
 | `category` | O | `normal`(정상) 또는 `special`(특별 관리) |
 | `interval_days` | O | 급여 간격(일). 기본 3 |
 | `start_date` | O | 간격 계산 기준일 (YYYY-MM-DD). 기본값은 내일 |
@@ -102,7 +100,7 @@ occurrence_index = elapsed // interval_days   # 0, 1, 2, ...
 🦎 오늘 급여할 개체
 
 ■ 정상 개체
-- 아메(릴리화이트) · 칼슘+비타민 섞기
+- 아메 · 칼슘+비타민 섞기
 - 꿈이
 
 ■ 특별 관리 개체
@@ -110,7 +108,6 @@ occurrence_index = elapsed // interval_days   # 0, 1, 2, ...
 ```
 
 규칙:
-- 모프가 없는 개체는 이름만 표시한다.
 - 보충 회차가 아닌 개체는 ` · 문구` 없이 이름만 표시한다.
 - 한 섹션에 대상이 없으면 그 섹션 머리글은 생략한다.
 - 양쪽 모두 대상이 한 마리도 없으면 **메시지를 보내지 않는다** (알림 피로 방지).
@@ -142,8 +139,8 @@ occurrence_index = elapsed // interval_days   # 0, 1, 2, ...
 - `supplement_note(category, occurrence_index)` — normal/special별 문구, 격회
   표시(0회차 없음, 1회차 있음) 검증.
 - `geckos_due_today(config, today)` — 여러 개체 중 대상만 추려지는지 검증.
-- `format_message(due_geckos)` — normal/special 섹션 분리, 모프 유무, 보충 문구
-  유무, 한 섹션만 있는 경우, 빈 목록 처리 검증.
+- `format_message(due_geckos)` — normal/special 섹션 분리, 보충 문구 유무, 한
+  섹션만 있는 경우, 빈 목록 처리 검증.
 - 발송 흐름 — 대상이 없으면 텔레그램 API를 호출하지 않는지 mock으로 검증.
 
 ## 디렉터리 구조
