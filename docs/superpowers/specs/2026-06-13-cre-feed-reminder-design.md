@@ -84,14 +84,11 @@ occurrence_index = elapsed // interval_days   # 0, 1, 2, ...
 ```
 
 **보충제 표시 (두 번에 한 번):** 각 개체는 자기 급여 회차가 "두 번에 한 번"
-돌아올 때 보충 안내 문구를 함께 표시한다. 기준은 `occurrence_index % 2 == 1`,
-즉 **2번째·4번째·6번째 급여일**에 표시한다 (첫 급여일은 표시 없음).
+돌아올 때 보충 안내 문구를 함께 표시한다. 기준은 `occurrence_index % 2 == 0`,
+즉 **1번째·3번째·5번째 급여일**에 표시한다 (첫 급여일부터 격회로 붙는다).
 
 - `category: normal` → `칼슘+비타민 섞기`
 - `category: special` → `MBD off 주기`
-
-> 가정: 보충 문구는 첫 급여(0회차)에는 없고 2회차부터 격회로 붙는다.
-> 첫 급여부터 붙기를 원하면 판정을 `% 2 == 0`으로 바꾸면 된다.
 
 **메시지 포맷:** 오늘 급여 대상 개체를 `normal` / `special` 두 섹션으로 나눠
 한 통으로 보낸다. 보충 문구는 해당 개체 옆에 붙인다.
@@ -137,7 +134,7 @@ occurrence_index = elapsed // interval_days   # 0, 1, 2, ...
   비배수일, 기준일 이전) 검증.
 - `occurrence_index(start_date, interval_days, today)` — 0회차/1회차/2회차 계산.
 - `supplement_note(category, occurrence_index)` — normal/special별 문구, 격회
-  표시(0회차 없음, 1회차 있음) 검증.
+  표시(0회차 있음, 1회차 없음, 2회차 있음) 검증.
 - `geckos_due_today(config, today)` — 여러 개체 중 대상만 추려지는지 검증.
 - `format_message(due_geckos)` — normal/special 섹션 분리, 보충 문구 유무, 한
   섹션만 있는 경우, 빈 목록 처리 검증.
