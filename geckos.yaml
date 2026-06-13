@@ -1,0 +1,16 @@
+# 크레스티드 게코 급여 알리미 설정
+# 개체를 추가/삭제하려면 아래 목록을 편집하세요.
+#   name:          개체 이름
+#   category:      normal(정상) 또는 special(특별 관리)
+#   interval_days: 급여 간격(일). 보통 3
+#   start_date:    급여 시작 기준일 (YYYY-MM-DD)
+geckos:
+  - name: 예시개체-정상
+    category: normal
+    interval_days: 3
+    start_date: 2026-06-14
+
+  - name: 예시개체-특별관리
+    category: special
+    interval_days: 3
+    start_date: 2026-06-14
