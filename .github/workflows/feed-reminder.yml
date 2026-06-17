@@ -2,9 +2,9 @@ name: feed-reminder
 
 on:
   schedule:
-    # 매일 오후 6시 KST = 09:00 UTC
-    # 참고: GitHub 예약 실행은 보통 10~90분 늦게 도착할 수 있음
-    - cron: "0 9 * * *"
+    # 매일 오후 12시(정오) KST = 03:00 UTC
+    # 참고: GitHub 예약 실행은 수 시간 늦게 도착할 수 있어, 일찍 걸어둠
+    - cron: "0 3 * * *"
   workflow_dispatch:
     inputs:
       force_send:
